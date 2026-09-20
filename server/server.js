@@ -91,7 +91,29 @@ app.post('/api/subjects', async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 });
+app.put('/api/subjects/:id', async (req, res) => {
+  try {
+    const { code, name, description } = req.body;
+    if (!code || !name) return res.status(400).json({ error: 'code and name required' });
+    const { rows } = await pool.query(
+      'UPDATE subjects SET code = $1, name = $2, description = $3 WHERE id = $4 RETURNING *',
+      [code, name, description || null, req.params.id]
+    );
+    if (!rows[0]) return res.status(404).json({ error: 'Subject not found' });
+    res.json(rows[0]);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
 
+app.delete('/api/subjects/:id', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM subjects WHERE id = $1', [req.params.id]);
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
 // ---- ASSIGNMENTS ----
 app.get('/api/assignments', async (req, res) => {
   try {
@@ -121,6 +143,31 @@ app.post('/api/assignments', async (req, res) => {
   }
 });
 
+app.put('/api/assignments/:id', async (req, res) => {
+  try {
+    const { subject_id, title, description, due_date, status } = req.body;
+    const { rows } = await pool.query(
+      `UPDATE assignments
+       SET subject_id = $1, title = $2, description = $3, due_date = $4, status = $5
+       WHERE id = $6 RETURNING *`,
+      [subject_id, title, description || null, due_date || null, status || 'pending', req.params.id]
+    );
+    if (!rows[0]) return res.status(404).json({ error: 'Assignment not found' });
+    res.json(rows[0]);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+app.delete('/api/assignments/:id', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM assignments WHERE id = $1', [req.params.id]);
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
 // ---- NOTICES ----
 app.get('/api/notices', async (req, res) => {
   try {
@@ -140,6 +187,30 @@ app.post('/api/notices', async (req, res) => {
       [subject_id || null, title, message]
     );
     res.status(201).json(rows[0]);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+app.put('/api/notices/:id', async (req, res) => {
+  try {
+    const { subject_id, title, message } = req.body;
+    if (!title || !message) return res.status(400).json({ error: 'title and message required' });
+    const { rows } = await pool.query(
+      'UPDATE notices SET subject_id = $1, title = $2, message = $3 WHERE id = $4 RETURNING *',
+      [subject_id || null, title, message, req.params.id]
+    );
+    if (!rows[0]) return res.status(404).json({ error: 'Notice not found' });
+    res.json(rows[0]);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+app.delete('/api/notices/:id', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM notices WHERE id = $1', [req.params.id]);
+    res.json({ ok: true });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }

@@ -296,3 +296,42 @@
   font-size: 13px;
   margin-bottom: 12px;
 }
+
+/* ---- List item actions ---- */
+.list-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.list-item .content {
+  flex: 1;
+  min-width: 0;
+}
+
+.list-item .actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.list-item .actions button {
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+.btn-edit {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.btn-edit:hover { background: #d1d5db; }
+
+.btn-danger {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.btn-danger:hover { background: #fecaca; }

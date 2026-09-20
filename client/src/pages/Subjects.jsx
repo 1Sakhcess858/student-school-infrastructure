@@ -5,6 +5,7 @@ import FormField from '../components/FormField';
 export default function Subjects() {
   const [subjects, setSubjects] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState(null);
   const [code, setCode] = useState('');
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -26,6 +27,26 @@ export default function Subjects() {
     setName('');
     setDescription('');
     setError('');
+    setEditingId(null);
+  }
+
+  function startCreate() {
+    reset();
+    setShowForm(true);
+  }
+
+  function startEdit(s) {
+    setEditingId(s.id);
+    setCode(s.code);
+    setName(s.name);
+    setDescription(s.description || '');
+    setShowForm(true);
+    setError('');
+  }
+
+  function cancelForm() {
+    reset();
+    setShowForm(false);
   }
 
   async function handleSubmit(e) {
@@ -33,18 +54,32 @@ export default function Subjects() {
     setError('');
     setSaving(true);
     try {
-      await api.createSubject({
+      const data = {
         code: code.trim(),
         name: name.trim(),
         description: description.trim() || null,
-      });
-      reset();
-      setShowForm(false);
+      };
+      if (editingId) {
+        await api.updateSubject(editingId, data);
+      } else {
+        await api.createSubject(data);
+      }
+      cancelForm();
       await load();
     } catch (err) {
       setError(err.message);
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleDelete(s) {
+    if (!window.confirm(`Delete "${s.code} — ${s.name}"?`)) return;
+    try {
+      await api.deleteSubject(s.id);
+      await load();
+    } catch (err) {
+      setError(err.message);
     }
   }
 
@@ -55,14 +90,12 @@ export default function Subjects() {
           <h1>My Subjects</h1>
           <p className="subtitle">All subjects you are enrolled in</p>
         </div>
-        <button onClick={() => { reset(); setShowForm(v => !v); }}>
-          {showForm ? 'Cancel' : '+ Add Subject'}
-        </button>
+        {!showForm && <button onClick={startCreate}>+ Add Subject</button>}
       </div>
 
       {showForm && (
         <form className="form-card" onSubmit={handleSubmit}>
-          <h3>New Subject</h3>
+          <h3>{editingId ? 'Edit Subject' : 'New Subject'}</h3>
           {error && <div className="form-error">{error}</div>}
           <div className="form-grid">
             <FormField label="Code">
@@ -76,10 +109,10 @@ export default function Subjects() {
             </FormField>
           </div>
           <div className="form-actions">
-            <button type="submit" disabled={saving}>{saving ? 'Saving…' : 'Save Subject'}</button>
-            <button type="button" className="btn-secondary" onClick={() => { reset(); setShowForm(false); }}>
-              Cancel
+            <button type="submit" disabled={saving}>
+              {saving ? 'Saving…' : editingId ? 'Save Changes' : 'Save Subject'}
             </button>
+            <button type="button" className="btn-secondary" onClick={cancelForm}>Cancel</button>
           </div>
         </form>
       )}
@@ -89,8 +122,14 @@ export default function Subjects() {
           <div className="empty">No subjects yet</div>
         ) : subjects.map(s => (
           <div key={s.id} className="list-item">
-            <div className="title">{s.code} — {s.name}</div>
-            {s.description && <div className="meta">{s.description}</div>}
+            <div className="content">
+              <div className="title">{s.code} — {s.name}</div>
+              {s.description && <div className="meta">{s.description}</div>}
+            </div>
+            <div className="actions">
+              <button className="btn-edit" onClick={() => startEdit(s)}>Edit</button>
+              <button className="btn-danger" onClick={() => handleDelete(s)}>Delete</button>
+            </div>
           </div>
         ))}
       </div>

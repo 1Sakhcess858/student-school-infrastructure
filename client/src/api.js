@@ -24,12 +24,30 @@ export const api = {
 
   getSubjects: () => request('/subjects'),
   createSubject: (data) => post('/subjects', data),
+  updateSubject: (id, data) => request(`/subjects/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  }),
+  deleteSubject: (id) => request(`/subjects/${id}`, { method: 'DELETE' }),
 
   getAssignments: () => request('/assignments'),
   createAssignment: (data) => post('/assignments', data),
+  updateAssignment: (id, data) => request(`/assignments/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  }),
+  deleteAssignment: (id) => request(`/assignments/${id}`, { method: 'DELETE' }),
 
   getNotices: () => request('/notices'),
   createNotice: (data) => post('/notices', data),
+  updateNotice: (id, data) => request(`/notices/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  }),
+  deleteNotice: (id) => request(`/notices/${id}`, { method: 'DELETE' }),
 
   getProfile: (id) => request(`/profile/${id}`),
   updateProfile: (id, data) => request(`/profile/${id}`, {

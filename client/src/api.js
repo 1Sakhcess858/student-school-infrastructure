@@ -40,6 +40,11 @@ export const api = {
   }),
   deleteAssignment: (id) => request(`/assignments/${id}`, { method: 'DELETE' }),
 
+    setAssignmentStatus: (id, status) => request(`/assignments/${id}/status`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status }),
+  }),
   getNotices: () => request('/notices'),
   createNotice: (data) => post('/notices', data),
   updateNotice: (id, data) => request(`/notices/${id}`, {

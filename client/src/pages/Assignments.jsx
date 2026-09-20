@@ -88,6 +88,16 @@ export default function Assignments() {
     }
   }
 
+  async function toggleStatus(a) {
+    const newStatus = a.status === 'done' ? 'pending' : 'done';
+    try {
+      await api.setAssignmentStatus(a.id, newStatus);
+      await load();
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+
   return (
     <>
       <div className="page-head">
@@ -142,7 +152,16 @@ export default function Assignments() {
         ) : items.map(a => (
           <div key={a.id} className="list-item">
             <div className="content">
-              <div className="title">{a.title}</div>
+              <label className="status-toggle">
+                <input
+                  type="checkbox"
+                  checked={a.status === 'done'}
+                  onChange={() => toggleStatus(a)}
+                />
+                <span className={`title ${a.status === 'done' ? 'done' : ''}`}>
+                  {a.title}
+                </span>
+              </label>
               <div className="meta">
                 {a.subject_code} · due {a.due_date || 'TBA'} · {a.status}
               </div>

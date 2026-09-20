@@ -4,7 +4,7 @@ const cors = require('cors');
 const db = require('./db');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
@@ -12,6 +12,30 @@ app.use(express.json());
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Server is running' });
+});
+
+// ---- AUTH ----
+app.post('/api/login', (req, res) => {
+  const { student_number, password } = req.body;
+  if (!student_number || !password) {
+    return res.status(400).json({ error: 'student_number and password required' });
+  }
+
+  const student = db.prepare(
+    'SELECT id, student_number, name, email, programme, year, password FROM students WHERE student_number = ?'
+  ).get(student_number);
+
+  if (!student) {
+    return res.status(401).json({ error: 'Invalid credentials' });
+  }
+
+  const ok = bcrypt.compareSync(password, student.password);
+  if (!ok) {
+    return res.status(401).json({ error: 'Invalid credentials' });
+  }
+
+  const { password: _, ...safe } = student;
+  res.json({ student: safe });
 });
 
 // ---- PROFILE ----
@@ -39,29 +63,6 @@ app.put('/api/profile/:id', (req, res) => {
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
-});
-// ---- AUTH ----
-app.post('/api/login', (req, res) => {
-  const { student_number, password } = req.body;
-  if (!student_number || !password) {
-    return res.status(400).json({ error: 'student_number and password required' });
-  }
-
-  const student = db.prepare(
-    'SELECT id, student_number, name, email, programme, year, password FROM students WHERE student_number = ?'
-  ).get(student_number);
-
-  if (!student) {
-    return res.status(401).json({ error: 'Invalid credentials' });
-  }
-
-  const ok = bcrypt.compareSync(password, student.password);
-  if (!ok) {
-    return res.status(401).json({ error: 'Invalid credentials' });
-  }
-
-  const { password: _, ...safe } = student;
-  res.json({ student: safe });
 });
 
 // ---- SUBJECTS ----

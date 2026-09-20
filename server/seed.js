@@ -1,26 +1,19 @@
+require('dotenv').config();
 const bcrypt = require('bcrypt');
-const db = require('./db');
+const { pool, init } = require('./db');
 
-const studentNumber = 'ST10455429';
-const name = 'Sakhcess';
-const email = 'sakhcess@example.com';
-const programme = 'Software Development';
-const year = 3;
-const plainPassword = 'test1234';
-
-const existing = db.prepare('SELECT id FROM students WHERE student_number = ?').get(studentNumber);
-if (existing) {
-  console.log('Student already exists — skipping');
-  process.exit(0);
-}
-
-const hash = bcrypt.hashSync(plainPassword, 10);
-
-db.prepare(`
-  INSERT INTO students (student_number, name, email, programme, year, password)
-  VALUES (?, ?, ?, ?, ?, ?)
-`).run(studentNumber, name, email, programme, year, hash);
-
-console.log('Created student:');
-console.log('  student_number:', studentNumber);
-console.log('  password      :', plainPassword);
+(async () => {
+  await init();
+  const { rows } = await pool.query('SELECT COUNT(*)::int AS n FROM students');
+  if (rows[0].n > 0) {
+    console.log('Students already exist — skipping');
+    process.exit(0);
+  }
+  const hash = bcrypt.hashSync('test1234', 10);
+  await pool.query(
+    'INSERT INTO students (student_number, name, email, programme, year, password) VALUES ($1, $2, $3, $4, $5, $6)',
+    ['ST10455429', 'Sakhcess', 'sakhcess@example.com', 'Software Development', 3, hash]
+  );
+  console.log('Created student: ST10455429 / test1234');
+  await pool.end();
+})();

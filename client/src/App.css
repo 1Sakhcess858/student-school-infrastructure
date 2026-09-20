@@ -1,4 +1,16 @@
-/* ---- App layout ---- */
+/* ---- Dashboard sections ---- */
+.section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin: 28px 0 12px;
+}
+
+/* ---- Assignment urgency states ---- */
+.list-item.assignment {
+  border-left: 4px solid transparent;
+  padding-left: 16px;
+}/* ---- App layout ---- */
 .app {
   display: flex;
   min-height: 100vh;
@@ -107,11 +119,33 @@
 .list-item {
   padding: 14px 20px;
   border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
 }
 
 .list-item:last-child { border-bottom: none; }
+
+.list-item .content {
+  flex: 1;
+  min-width: 0;
+}
+
 .list-item .title { font-weight: 500; }
 .list-item .meta { font-size: 13px; color: #6b7280; margin-top: 4px; }
+
+.list-item .actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.list-item .actions button {
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 5px;
+}
 
 .empty {
   padding: 40px;
@@ -119,6 +153,28 @@
   color: #9ca3af;
   font-size: 14px;
 }
+
+/* ---- Action button variants ---- */
+.btn-edit {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.btn-edit:hover { background: #d1d5db; }
+
+.btn-danger {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.btn-danger:hover { background: #fecaca; }
+
+.btn-secondary {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.btn-secondary:hover { background: #d1d5db; }
 
 /* ---- Login ---- */
 .login-wrap {
@@ -201,7 +257,8 @@
   color: #9ca3af;
   text-align: center;
 }
-/* ---- Create forms ---- */
+
+/* ---- Forms ---- */
 .page-head {
   display: flex;
   justify-content: space-between;
@@ -276,17 +333,6 @@
   margin-bottom: 12px;
 }
 
-.form-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.btn-secondary {
-  background: #e5e7eb;
-  color: #111827;
-}
-
-.btn-secondary:hover { background: #d1d5db; }
 .form-ok {
   background: #ecfdf5;
   color: #047857;
@@ -297,44 +343,10 @@
   margin-bottom: 12px;
 }
 
-/* ---- List item actions ---- */
-.list-item {
+.form-actions {
   display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  align-items: flex-start;
+  gap: 8px;
 }
-
-.list-item .content {
-  flex: 1;
-  min-width: 0;
-}
-
-.list-item .actions {
-  display: flex;
-  gap: 6px;
-  flex-shrink: 0;
-}
-
-.list-item .actions button {
-  font-size: 12px;
-  padding: 5px 10px;
-  border-radius: 5px;
-}
-
-.btn-edit {
-  background: #e5e7eb;
-  color: #111827;
-}
-
-.btn-edit:hover { background: #d1d5db; }
-
-.btn-danger {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
-.btn-danger:hover { background: #fecaca; }
 
 /* ---- Assignment status toggle ---- */
 .status-toggle {
@@ -356,6 +368,58 @@
 }
 
 .status-toggle .title.done {
+  text-decoration: line-through;
+  color: #9ca3af;
+}
+
+/* ---- Dashboard sections ---- */
+.section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin: 28px 0 12px;
+}
+
+/* ---- Assignment urgency states ---- */
+.list-item.assignment {
+  border-left: 4px solid transparent;
+  padding-left: 16px;
+}
+
+.list-item.assignment.overdue {
+  border-left-color: #dc2626;
+  background: #fef2f2;
+}
+
+.list-item.assignment.soon {
+  border-left-color: #f59e0b;
+  background: #fffbeb;
+}
+
+.list-item.assignment.ok {
+  border-left-color: #10b981;
+}
+
+.title.done {
+  text-decoration: line-through;
+  color: #9ca3af;
+}
+
+.list-item.assignment.overdue {
+  border-left-color: #dc2626;
+  background: #fef2f2;
+}
+
+.list-item.assignment.soon {
+  border-left-color: #f59e0b;
+  background: #fffbeb;
+}
+
+.list-item.assignment.ok {
+  border-left-color: #10b981;
+}
+
+.title.done {
   text-decoration: line-through;
   color: #9ca3af;
 }

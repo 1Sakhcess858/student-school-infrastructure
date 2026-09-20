@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const express = require('express');
 const cors = require('cors');
 const db = require('./db');
@@ -11,6 +12,56 @@ app.use(express.json());
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Server is running' });
+});
+
+// ---- PROFILE ----
+app.get('/api/profile/:id', (req, res) => {
+  const student = db.prepare(
+    'SELECT id, student_number, name, email, programme, year FROM students WHERE id = ?'
+  ).get(req.params.id);
+  if (!student) return res.status(404).json({ error: 'Student not found' });
+  res.json(student);
+});
+
+app.put('/api/profile/:id', (req, res) => {
+  const { name, email, programme, year } = req.body;
+  if (!name || !email) {
+    return res.status(400).json({ error: 'name and email required' });
+  }
+  try {
+    db.prepare(
+      'UPDATE students SET name = ?, email = ?, programme = ?, year = ? WHERE id = ?'
+    ).run(name, email, programme || null, year || null, req.params.id);
+    const student = db.prepare(
+      'SELECT id, student_number, name, email, programme, year FROM students WHERE id = ?'
+    ).get(req.params.id);
+    res.json(student);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+// ---- AUTH ----
+app.post('/api/login', (req, res) => {
+  const { student_number, password } = req.body;
+  if (!student_number || !password) {
+    return res.status(400).json({ error: 'student_number and password required' });
+  }
+
+  const student = db.prepare(
+    'SELECT id, student_number, name, email, programme, year, password FROM students WHERE student_number = ?'
+  ).get(student_number);
+
+  if (!student) {
+    return res.status(401).json({ error: 'Invalid credentials' });
+  }
+
+  const ok = bcrypt.compareSync(password, student.password);
+  if (!ok) {
+    return res.status(401).json({ error: 'Invalid credentials' });
+  }
+
+  const { password: _, ...safe } = student;
+  res.json({ student: safe });
 });
 
 // ---- SUBJECTS ----

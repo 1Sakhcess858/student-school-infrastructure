@@ -1,3 +1,4 @@
+/* ---- App layout ---- */
 .app {
   display: flex;
   min-height: 100vh;
@@ -8,6 +9,8 @@
   background: #111827;
   color: #e5e7eb;
   padding: 20px 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .sidebar h2 {
@@ -27,6 +30,29 @@
 .sidebar nav a:hover { background: #1f2937; color: white; }
 .sidebar nav a.active { background: #2563eb; color: white; }
 
+/* ---- Sidebar footer (student + logout) ---- */
+.sidebar-footer {
+  margin-top: auto;
+  padding: 16px 20px;
+  border-top: 1px solid #1f2937;
+}
+
+.sidebar-footer .who {
+  color: #9ca3af;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.sidebar-footer .logout {
+  width: 100%;
+  background: #374151;
+  font-size: 13px;
+  padding: 8px;
+}
+
+.sidebar-footer .logout:hover { background: #4b5563; }
+
+/* ---- Main content ---- */
 .main {
   flex: 1;
   padding: 32px;
@@ -43,6 +69,7 @@
   margin-bottom: 24px;
 }
 
+/* ---- Cards ---- */
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -69,6 +96,7 @@
   margin-top: 4px;
 }
 
+/* ---- Lists ---- */
 .list {
   background: white;
   border-radius: 10px;
@@ -90,4 +118,181 @@
   text-align: center;
   color: #9ca3af;
   font-size: 14px;
+}
+
+/* ---- Login ---- */
+.login-wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f4f6f8;
+  padding: 20px;
+}
+
+.login-box {
+  background: white;
+  padding: 32px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  width: 100%;
+  max-width: 380px;
+}
+
+.login-box h1 {
+  font-size: 22px;
+  margin-bottom: 6px;
+}
+
+.login-box .subtitle {
+  color: #6b7280;
+  font-size: 14px;
+  margin-bottom: 22px;
+}
+
+.login-box label {
+  display: block;
+  font-size: 13px;
+  color: #374151;
+  margin-bottom: 16px;
+}
+
+.login-box input {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.login-box input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.login-box button {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+}
+
+.login-box button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.login-box .error {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+.login-box .hint {
+  margin-top: 18px;
+  font-size: 12px;
+  color: #9ca3af;
+  text-align: center;
+}
+/* ---- Create forms ---- */
+.page-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.page-head button {
+  white-space: nowrap;
+}
+
+.form-card {
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.form-card h3 {
+  font-size: 15px;
+  margin-bottom: 14px;
+  color: #111827;
+}
+
+.form-grid {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.form-grid label {
+  display: block;
+  font-size: 13px;
+  color: #374151;
+}
+
+.form-grid input,
+.form-grid textarea,
+.form-grid select {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  padding: 9px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  background: white;
+}
+
+.form-grid textarea {
+  min-height: 70px;
+  resize: vertical;
+}
+
+.form-grid input:focus,
+.form-grid textarea:focus,
+.form-grid select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.form-error {
+  background: #fef2f2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  padding: 9px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-secondary {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.btn-secondary:hover { background: #d1d5db; }
+.form-ok {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+  padding: 9px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  margin-bottom: 12px;
 }

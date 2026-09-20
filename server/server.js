@@ -126,6 +126,17 @@ app.post('/api/notices', (req, res) => {
   }
 });
 
+// ---- AUTO SEED (runs once on startup if DB is empty) ----
+const studentCount = db.prepare('SELECT COUNT(*) AS n FROM students').get().n;
+if (studentCount === 0) {
+  const hash = bcrypt.hashSync('test1234', 10);
+  db.prepare(`
+    INSERT INTO students (student_number, name, email, programme, year, password)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `).run('ST10455429', 'Sakhcess', 'sakhcess@example.com', 'Software Development', 3, hash);
+  console.log('Auto-seeded test student: ST10455429 / test1234');
+}
+
 // ---- START ----
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);

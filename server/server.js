@@ -91,6 +91,7 @@ app.post('/api/subjects', async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 });
+
 app.put('/api/subjects/:id', async (req, res) => {
   try {
     const { code, name, description } = req.body;
@@ -114,6 +115,7 @@ app.delete('/api/subjects/:id', async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 });
+
 // ---- ASSIGNMENTS ----
 app.get('/api/assignments', async (req, res) => {
   try {
@@ -227,6 +229,73 @@ app.put('/api/notices/:id', async (req, res) => {
 app.delete('/api/notices/:id', async (req, res) => {
   try {
     await pool.query('DELETE FROM notices WHERE id = $1', [req.params.id]);
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// ---- TIMETABLE ----
+app.get('/api/timetable', async (req, res) => {
+  try {
+    const { rows } = await pool.query(`
+      SELECT t.*, s.code AS subject_code, s.name AS subject_name
+      FROM timetable t
+      JOIN subjects s ON s.id = t.subject_id
+      ORDER BY
+        CASE t.day_of_week
+          WHEN 'Monday' THEN 1
+          WHEN 'Tuesday' THEN 2
+          WHEN 'Wednesday' THEN 3
+          WHEN 'Thursday' THEN 4
+          WHEN 'Friday' THEN 5
+          WHEN 'Saturday' THEN 6
+          WHEN 'Sunday' THEN 7
+        END,
+        t.start_time
+    `);
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/timetable', async (req, res) => {
+  try {
+    const { subject_id, day_of_week, start_time, end_time, room } = req.body;
+    if (!subject_id || !day_of_week || !start_time || !end_time) {
+      return res.status(400).json({ error: 'subject_id, day_of_week, start_time, end_time required' });
+    }
+    const { rows } = await pool.query(
+      `INSERT INTO timetable (subject_id, day_of_week, start_time, end_time, room)
+       VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+      [subject_id, day_of_week, start_time, end_time, room || null]
+    );
+    res.status(201).json(rows[0]);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+app.put('/api/timetable/:id', async (req, res) => {
+  try {
+    const { subject_id, day_of_week, start_time, end_time, room } = req.body;
+    const { rows } = await pool.query(
+      `UPDATE timetable
+       SET subject_id = $1, day_of_week = $2, start_time = $3, end_time = $4, room = $5
+       WHERE id = $6 RETURNING *`,
+      [subject_id, day_of_week, start_time, end_time, room || null, req.params.id]
+    );
+    if (!rows[0]) return res.status(404).json({ error: 'Timetable entry not found' });
+    res.json(rows[0]);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+app.delete('/api/timetable/:id', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM timetable WHERE id = $1', [req.params.id]);
     res.json({ ok: true });
   } catch (err) {
     res.status(400).json({ error: err.message });

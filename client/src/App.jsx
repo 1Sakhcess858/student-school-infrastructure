@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard';
 import Subjects from './pages/Subjects';
 import Assignments from './pages/Assignments';
 import Notices from './pages/Notices';
+import Timetable from './pages/Timetable';
 import Profile from './pages/Profile';
 import './App.css';
 
@@ -21,6 +22,7 @@ export default function App() {
             <Route path="subjects" element={<Subjects />} />
             <Route path="assignments" element={<Assignments />} />
             <Route path="notices" element={<Notices />} />
+            <Route path="timetable" element={<Timetable />} />
             <Route path="profile" element={<Profile />} />
           </Route>
         </Route>

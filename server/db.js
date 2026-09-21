@@ -47,6 +47,16 @@ async function init() {
       message TEXT NOT NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
+
+    CREATE TABLE IF NOT EXISTS timetable (
+      id SERIAL PRIMARY KEY,
+      student_id INTEGER REFERENCES students(id),
+      subject_id INTEGER NOT NULL REFERENCES subjects(id),
+      day_of_week TEXT NOT NULL,
+      start_time TEXT NOT NULL,
+      end_time TEXT NOT NULL,
+      room TEXT
+    );
   `);
 }
 

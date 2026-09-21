@@ -18,14 +18,13 @@ export default function Layout() {
           <NavLink to="/" end>Dashboard</NavLink>
           <NavLink to="/subjects">Subjects</NavLink>
           <NavLink to="/assignments">Assignments</NavLink>
+          <NavLink to="/timetable">Timetable</NavLink>
           <NavLink to="/notices">Notices</NavLink>
           <NavLink to="/profile">Profile</NavLink>
         </nav>
 
         <div className="sidebar-footer">
-          {student && (
-            <div className="who">{student.name}</div>
-          )}
+          {student && <div className="who">{student.name}</div>}
           <button className="logout" onClick={handleLogout}>Log out</button>
         </div>
       </aside>

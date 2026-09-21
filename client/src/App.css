@@ -1,16 +1,4 @@
-/* ---- Dashboard sections ---- */
-.section-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #111827;
-  margin: 28px 0 12px;
-}
-
-/* ---- Assignment urgency states ---- */
-.list-item.assignment {
-  border-left: 4px solid transparent;
-  padding-left: 16px;
-}/* ---- App layout ---- */
+/* ---- App layout ---- */
 .app {
   display: flex;
   min-height: 100vh;
@@ -152,6 +140,11 @@
   text-align: center;
   color: #9ca3af;
   font-size: 14px;
+}
+
+.empty.small {
+  padding: 20px 0;
+  font-size: 12px;
 }
 
 /* ---- Action button variants ---- */
@@ -405,21 +398,132 @@
   color: #9ca3af;
 }
 
-.list-item.assignment.overdue {
-  border-left-color: #dc2626;
-  background: #fef2f2;
+/* ---- Timetable grid ---- */
+.timetable {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
 }
 
-.list-item.assignment.soon {
-  border-left-color: #f59e0b;
-  background: #fffbeb;
+.day-column {
+  background: white;
+  border-radius: 10px;
+  padding: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  min-height: 200px;
 }
 
-.list-item.assignment.ok {
-  border-left-color: #10b981;
+.day-header {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #e5e7eb;
 }
 
-.title.done {
-  text-decoration: line-through;
-  color: #9ca3af;
+.class-card {
+  background: #f9fafb;
+  border-left: 3px solid #2563eb;
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  position: relative;
 }
+
+.class-time {
+  font-size: 11px;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.class-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.class-subject {
+  font-size: 11px;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+.class-room {
+  font-size: 11px;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+.class-actions {
+  display: flex;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.class-actions button {
+  font-size: 10px;
+  padding: 3px 7px;
+  border-radius: 4px;
+}
+
+@media (max-width: 900px) {
+  .timetable {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .timetable {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---- Attendance ---- */
+.attendance-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.summary-card {
+  background: white;
+  border-radius: 10px;
+  padding: 14px 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.summary-code {
+  font-size: 13px;
+  color: #2563eb;
+  font-weight: 600;
+}
+
+.summary-name {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+.summary-pct {
+  font-size: 22px;
+  font-weight: 600;
+  margin: 8px 0 4px;
+  color: #111827;
+}
+
+.summary-breakdown {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.summary-breakdown .ok { color: #047857; font-weight: 600; }
+.summary-breakdown .warn { color: #b45309; font-weight: 600; }
+.summary-breakdown .bad { color: #b91c1c; font-weight: 600; }
+
+.status-present { color: #047857; font-weight: 600; }
+.status-late { color: #b45309; font-weight: 600; }
+.status-absent { color: #b91c1c; font-weight: 600; }

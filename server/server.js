@@ -302,6 +302,88 @@ app.delete('/api/timetable/:id', async (req, res) => {
   }
 });
 
+// ---- ATTENDANCE ----
+app.get('/api/attendance', async (req, res) => {
+  try {
+    const { rows } = await pool.query(`
+      SELECT a.*, s.code AS subject_code, s.name AS subject_name
+      FROM attendance a
+      JOIN subjects s ON s.id = a.subject_id
+      ORDER BY a.date DESC, a.id DESC
+    `);
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/attendance/summary', async (req, res) => {
+  try {
+    const { rows } = await pool.query(`
+      SELECT
+        s.id AS subject_id,
+        s.code AS subject_code,
+        s.name AS subject_name,
+        COUNT(a.id)::int AS total,
+        COUNT(CASE WHEN a.status = 'present' THEN 1 END)::int AS present,
+        COUNT(CASE WHEN a.status = 'late' THEN 1 END)::int AS late,
+        COUNT(CASE WHEN a.status = 'absent' THEN 1 END)::int AS absent
+      FROM subjects s
+      LEFT JOIN attendance a ON a.subject_id = s.id
+      GROUP BY s.id, s.code, s.name
+      ORDER BY s.id
+    `);
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/attendance', async (req, res) => {
+  try {
+    const { subject_id, date, status } = req.body;
+    if (!subject_id || !date || !status) {
+      return res.status(400).json({ error: 'subject_id, date, status required' });
+    }
+    if (!['present', 'absent', 'late'].includes(status)) {
+      return res.status(400).json({ error: 'status must be present, absent, or late' });
+    }
+    const { rows } = await pool.query(
+      `INSERT INTO attendance (subject_id, date, status)
+       VALUES ($1, $2, $3) RETURNING *`,
+      [subject_id, date, status]
+    );
+    res.status(201).json(rows[0]);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+app.put('/api/attendance/:id', async (req, res) => {
+  try {
+    const { subject_id, date, status } = req.body;
+    const { rows } = await pool.query(
+      `UPDATE attendance
+       SET subject_id = $1, date = $2, status = $3
+       WHERE id = $4 RETURNING *`,
+      [subject_id, date, status, req.params.id]
+    );
+    if (!rows[0]) return res.status(404).json({ error: 'Attendance record not found' });
+    res.json(rows[0]);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+app.delete('/api/attendance/:id', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM attendance WHERE id = $1', [req.params.id]);
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
 // ---- BOOT ----
 (async () => {
   try {

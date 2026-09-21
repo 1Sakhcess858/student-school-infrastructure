@@ -57,6 +57,15 @@ async function init() {
       end_time TEXT NOT NULL,
       room TEXT
     );
+
+    CREATE TABLE IF NOT EXISTS attendance (
+      id SERIAL PRIMARY KEY,
+      student_id INTEGER REFERENCES students(id),
+      subject_id INTEGER NOT NULL REFERENCES subjects(id),
+      date DATE NOT NULL,
+      status TEXT NOT NULL,
+      UNIQUE (student_id, subject_id, date)
+    );
   `);
 }
 
